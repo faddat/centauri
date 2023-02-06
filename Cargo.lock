@@ -3886,7 +3886,7 @@ dependencies = [
  "sp-state-machine 0.12.0",
  "sp-trie 6.0.0",
  "subxt",
- "tendermint-proto",
+ "tendermint-proto 0.28.0",
  "thiserror",
  "tokio",
  "toml",
@@ -3907,7 +3907,7 @@ dependencies = [
  "ibc-proto",
  "log",
  "prometheus",
- "tendermint-proto",
+ "tendermint-proto 0.28.0",
  "thiserror",
  "tokio",
 ]
@@ -3971,7 +3971,7 @@ dependencies = [
  "ss58-registry",
  "subxt",
  "subxt-generated",
- "tendermint-proto",
+ "tendermint-proto 0.28.0",
  "thiserror",
  "tokio",
  "tokio-stream",
@@ -4026,7 +4026,7 @@ dependencies = [
  "sp-state-machine 0.12.0",
  "sp-trie 6.0.0",
  "subxt",
- "tendermint-proto",
+ "tendermint-proto 0.28.0",
  "tokio",
 ]
 
@@ -4080,7 +4080,7 @@ dependencies = [
  "sp-std 4.0.0",
  "subtle-encoding",
  "tendermint",
- "tendermint-proto",
+ "tendermint-proto 0.28.0",
  "test-log",
  "time 0.3.17",
  "tokio",
@@ -4132,7 +4132,7 @@ dependencies = [
  "prost",
  "schemars",
  "serde",
- "tendermint-proto",
+ "tendermint-proto 0.28.0",
  "tonic",
 ]
 
@@ -4153,6 +4153,7 @@ name = "ibc-rpc"
 version = "0.1.0"
 dependencies = [
  "frame-system",
+ "hash-db",
  "hex-literal",
  "ibc",
  "ibc-derive",
@@ -4171,7 +4172,7 @@ dependencies = [
  "sp-core 6.0.0",
  "sp-runtime 6.0.0",
  "sp-trie 6.0.0",
- "tendermint-proto",
+ "tendermint-proto 0.24.0-pre.2",
 ]
 
 [[package]]
@@ -4205,7 +4206,7 @@ dependencies = [
  "subtle-encoding",
  "tendermint",
  "tendermint-light-client-verifier",
- "tendermint-proto",
+ "tendermint-proto 0.28.0",
  "tendermint-rpc",
  "tendermint-testgen",
  "test-log",
@@ -4249,7 +4250,7 @@ dependencies = [
  "sp-trie 6.0.0",
  "subxt",
  "tendermint",
- "tendermint-proto",
+ "tendermint-proto 0.28.0",
  "tokio",
 ]
 
@@ -4284,7 +4285,7 @@ dependencies = [
  "sp-trie 6.0.0",
  "subxt",
  "tendermint",
- "tendermint-proto",
+ "tendermint-proto 0.28.0",
  "tokio",
 ]
 
@@ -4315,7 +4316,7 @@ dependencies = [
  "sp-core 6.0.0",
  "subtle-encoding",
  "tendermint",
- "tendermint-proto",
+ "tendermint-proto 0.28.0",
  "tendermint-rpc",
  "tendermint-testgen",
  "test-log",
@@ -6787,7 +6788,7 @@ dependencies = [
  "sp-trie 6.0.0",
  "tendermint",
  "tendermint-light-client-verifier",
- "tendermint-proto",
+ "tendermint-proto 0.28.0",
 ]
 
 [[package]]
@@ -13688,7 +13689,7 @@ dependencies = [
  "signature",
  "subtle",
  "subtle-encoding",
- "tendermint-proto",
+ "tendermint-proto 0.28.0",
  "time 0.3.17",
  "zeroize",
 ]
@@ -13715,6 +13716,23 @@ dependencies = [
  "flex-error",
  "serde",
  "tendermint",
+ "time 0.3.17",
+]
+
+[[package]]
+name = "tendermint-proto"
+version = "0.24.0-pre.2"
+source = "git+https://github.com/composableFi/tendermint-rs?rev=2c513dcaf2385d5b5f55e129a5ed11cc8d8ad5d0#2c513dcaf2385d5b5f55e129a5ed11cc8d8ad5d0"
+dependencies = [
+ "bytes",
+ "flex-error",
+ "num-derive",
+ "num-traits",
+ "prost",
+ "prost-types",
+ "serde",
+ "serde_bytes",
+ "subtle-encoding",
  "time 0.3.17",
 ]
 
