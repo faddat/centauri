@@ -102,7 +102,7 @@ impl<Hash: std::fmt::Debug> Display for BlockNumberOrHash<Hash> {
 #[derive(Serialize, Deserialize)]
 pub struct Proof {
 	/// Trie proof
-	pub ibc_proof: IbcProof,
+	pub proof: Vec<u8>,
 	/// Height at which proof was recovered
 	pub height: ibc_proto::ibc::core::client::v1::Height,
 }
@@ -684,8 +684,9 @@ where
 				return Err(e);
 			},
 		};
+		let proof = ibc_proof.encode();
 		Ok(Proof {
-			ibc_proof,
+			proof,
 			height: ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: height as u64,
@@ -763,9 +764,10 @@ where
 		};
 		let client_state = AnyClientState::decode_vec(&result.client_state)
 			.map_err(|_| runtime_error_into_rpc_error("Error querying client state"))?;
+		let proof = ibc_proof.encode();
 		Ok(QueryClientStateResponse {
 			client_state: Some(client_state.into()),
-			ibc_proof,
+			proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -833,9 +835,10 @@ where
 				return Err(e);
 			},
 		};
+		let proof = ibc_proof.encode();
 		Ok(QueryConsensusStateResponse {
 			consensus_state: Some(consensus_state.into()),
-			ibc_proof,
+			proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -924,9 +927,10 @@ where
 				return Err(e);
 			},
 		};
+		let proof = ibc_proof.encode();
 		Ok(QueryConnectionResponse {
 			connection: Some(connection_end.into()),
-			ibc_proof,
+			proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -1053,13 +1057,17 @@ where
 			.map_err(|_| RpcError::Custom("Unknown header".into()))?;
 		let state_root = *header.state_root();
 		let ibc_proof = match generate_trie_proofs::<<Block::Header as HeaderT>::Hashing>(
-			proof, state_root, child_info, keys,
+			proof,
+			state_root,
+			child_info,
+			result.trie_keys,
 		) {
 			Ok(p) => p,
 			Err(e) => {
 				return Err(e);
 			},
 		};
+		let proof = ibc_proof.encode();
 		let client_state = AnyClientState::decode_vec(&result.client_state)
 			.map_err(|_| runtime_error_into_rpc_error("Failed to decode client state"))?;
 		Ok(ConnHandshakeProof {
@@ -1067,7 +1075,7 @@ where
 				client_id,
 				client_state: Some(client_state.into()),
 			},
-			ibc_proof,
+			proof,
 			height: ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -1124,9 +1132,10 @@ where
 				return Err(e);
 			},
 		};
+		let proof = ibc_proof.encode();
 		Ok(QueryChannelResponse {
 			channel: Some(channel.into()),
-			ibc_proof,
+			proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -1434,9 +1443,10 @@ where
 				return Err(e);
 			},
 		};
+		let proof = ibc_proof.encode();
 		Ok(QueryNextSequenceReceiveResponse {
 			next_sequence_receive: result.sequence,
-			ibc_proof,
+			proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -1497,9 +1507,10 @@ where
 				return Err(e);
 			},
 		};
+		let proof = ibc_proof.encode();
 		Ok(QueryPacketCommitmentResponse {
 			commitment: result.commitment,
-			ibc_proof,
+			proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -1560,9 +1571,10 @@ where
 				return Err(e);
 			},
 		};
+		let proof = ibc_proof.encode();
 		Ok(QueryPacketAcknowledgementResponse {
 			acknowledgement: result.ack,
-			ibc_proof,
+			proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -1618,9 +1630,10 @@ where
 				return Err(e);
 			},
 		};
+		let proof = ibc_proof.encode();
 		Ok(QueryPacketReceiptResponse {
 			received: result.receipt,
-			ibc_proof,
+			proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
