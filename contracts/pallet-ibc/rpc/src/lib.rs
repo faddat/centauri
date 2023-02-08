@@ -448,7 +448,7 @@ where
 			},
 			None => return Err(runtime_error_into_rpc_error("Error fetching packets")),
 		},
-		Err(e) => return Err(runtime_error_into_rpc_error("Error fetching packets")),
+		Err(_e) => return Err(runtime_error_into_rpc_error("Error fetching packets")),
 	};
 
 	let binding = child_info.prefixed_storage_key();
@@ -748,11 +748,24 @@ where
 			.iter_nodes()
 			.collect::<Vec<_>>()
 			.encode();
+		let header = self
+			.client
+			.expect_header(at)
+			.map_err(|_| RpcError::Custom("Unknown header".into()))?;
+		let state_root = *header.state_root();
+		let ibc_proof = match generate_trie_proofs::<<Block::Header as HeaderT>::Hashing>(
+			proof, state_root, child_info, keys,
+		) {
+			Ok(p) => p,
+			Err(e) => {
+				return Err(e);
+			},
+		};
 		let client_state = AnyClientState::decode_vec(&result.client_state)
 			.map_err(|_| runtime_error_into_rpc_error("Error querying client state"))?;
 		Ok(QueryClientStateResponse {
 			client_state: Some(client_state.into()),
-			proof,
+			ibc_proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -807,9 +820,22 @@ where
 			.iter_nodes()
 			.collect::<Vec<_>>()
 			.encode();
+		let header = self
+			.client
+			.expect_header(at)
+			.map_err(|_| RpcError::Custom("Unknown header".into()))?;
+		let state_root = *header.state_root();
+		let ibc_proof = match generate_trie_proofs::<<Block::Header as HeaderT>::Hashing>(
+			proof, state_root, child_info, keys,
+		) {
+			Ok(p) => p,
+			Err(e) => {
+				return Err(e);
+			},
+		};
 		Ok(QueryConsensusStateResponse {
 			consensus_state: Some(consensus_state.into()),
-			proof,
+			ibc_proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -885,9 +911,22 @@ where
 			.iter_nodes()
 			.collect::<Vec<_>>()
 			.encode();
+		let header = self
+			.client
+			.expect_header(at)
+			.map_err(|_| RpcError::Custom("Unknown header".into()))?;
+		let state_root = *header.state_root();
+		let ibc_proof = match generate_trie_proofs::<<Block::Header as HeaderT>::Hashing>(
+			proof, state_root, child_info, keys,
+		) {
+			Ok(p) => p,
+			Err(e) => {
+				return Err(e);
+			},
+		};
 		Ok(QueryConnectionResponse {
 			connection: Some(connection_end.into()),
-			proof,
+			ibc_proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -1008,7 +1047,19 @@ where
 			.iter_nodes()
 			.collect::<Vec<_>>()
 			.encode();
-
+		let header = self
+			.client
+			.expect_header(at)
+			.map_err(|_| RpcError::Custom("Unknown header".into()))?;
+		let state_root = *header.state_root();
+		let ibc_proof = match generate_trie_proofs::<<Block::Header as HeaderT>::Hashing>(
+			proof, state_root, child_info, keys,
+		) {
+			Ok(p) => p,
+			Err(e) => {
+				return Err(e);
+			},
+		};
 		let client_state = AnyClientState::decode_vec(&result.client_state)
 			.map_err(|_| runtime_error_into_rpc_error("Failed to decode client state"))?;
 		Ok(ConnHandshakeProof {
@@ -1016,7 +1067,7 @@ where
 				client_id,
 				client_state: Some(client_state.into()),
 			},
-			proof,
+			ibc_proof,
 			height: ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -1060,9 +1111,22 @@ where
 			.iter_nodes()
 			.collect::<Vec<_>>()
 			.encode();
+		let header = self
+			.client
+			.expect_header(at)
+			.map_err(|_| RpcError::Custom("Unknown header".into()))?;
+		let state_root = *header.state_root();
+		let ibc_proof = match generate_trie_proofs::<<Block::Header as HeaderT>::Hashing>(
+			proof, state_root, child_info, keys,
+		) {
+			Ok(p) => p,
+			Err(e) => {
+				return Err(e);
+			},
+		};
 		Ok(QueryChannelResponse {
 			channel: Some(channel.into()),
-			proof,
+			ibc_proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -1357,9 +1421,22 @@ where
 			.iter_nodes()
 			.collect::<Vec<_>>()
 			.encode();
+		let header = self
+			.client
+			.expect_header(at)
+			.map_err(|_| RpcError::Custom("Unknown header".into()))?;
+		let state_root = *header.state_root();
+		let ibc_proof = match generate_trie_proofs::<<Block::Header as HeaderT>::Hashing>(
+			proof, state_root, child_info, keys,
+		) {
+			Ok(p) => p,
+			Err(e) => {
+				return Err(e);
+			},
+		};
 		Ok(QueryNextSequenceReceiveResponse {
 			next_sequence_receive: result.sequence,
-			proof,
+			ibc_proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -1407,9 +1484,22 @@ where
 			.iter_nodes()
 			.collect::<Vec<_>>()
 			.encode();
+		let header = self
+			.client
+			.expect_header(at)
+			.map_err(|_| RpcError::Custom("Unknown header".into()))?;
+		let state_root = *header.state_root();
+		let ibc_proof = match generate_trie_proofs::<<Block::Header as HeaderT>::Hashing>(
+			proof, state_root, child_info, keys,
+		) {
+			Ok(p) => p,
+			Err(e) => {
+				return Err(e);
+			},
+		};
 		Ok(QueryPacketCommitmentResponse {
 			commitment: result.commitment,
-			proof,
+			ibc_proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -1457,9 +1547,22 @@ where
 			.iter_nodes()
 			.collect::<Vec<_>>()
 			.encode();
+		let header = self
+			.client
+			.expect_header(at)
+			.map_err(|_| RpcError::Custom("Unknown header".into()))?;
+		let state_root = *header.state_root();
+		let ibc_proof = match generate_trie_proofs::<<Block::Header as HeaderT>::Hashing>(
+			proof, state_root, child_info, keys,
+		) {
+			Ok(p) => p,
+			Err(e) => {
+				return Err(e);
+			},
+		};
 		Ok(QueryPacketAcknowledgementResponse {
 			acknowledgement: result.ack,
-			proof,
+			ibc_proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
@@ -1502,9 +1605,22 @@ where
 			.iter_nodes()
 			.collect::<Vec<_>>()
 			.encode();
+		let header = self
+			.client
+			.expect_header(at)
+			.map_err(|_| RpcError::Custom("Unknown header".into()))?;
+		let state_root = *header.state_root();
+		let ibc_proof = match generate_trie_proofs::<<Block::Header as HeaderT>::Hashing>(
+			proof, state_root, child_info, keys,
+		) {
+			Ok(p) => p,
+			Err(e) => {
+				return Err(e);
+			},
+		};
 		Ok(QueryPacketReceiptResponse {
 			received: result.receipt,
-			proof,
+			ibc_proof,
 			proof_height: Some(ibc_proto::ibc::core::client::v1::Height {
 				revision_number: para_id.into(),
 				revision_height: result.height,
